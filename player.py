@@ -14,5 +14,5 @@ class Player:
         self.getPayoff().append(payoff)
 
     def __str__(self):
-        return "Player [{}] \n Payoff: {}".format(self.getStrategy(),
-                                                  self.getPayoff())
+        return "Player instance [{}] \n Payoff: {}".format(self.getStrategy(),
+                                                           self.getPayoff())

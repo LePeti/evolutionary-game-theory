@@ -13,7 +13,7 @@ help:
 	@echo "       run main.py"
 
 test: clean
-	pipenv run python -m unittest discover -s tests --verbose
+	pipenv run python -m unittest discover -s tests
 
 clean:
 	find . -name '*.pyc' -delete

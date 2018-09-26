@@ -11,5 +11,5 @@ if __name__ == "__main__":
     pd_game = GamePlay(p1, p2, pd)
 
     pd_game.playMultipleRounds(10)
-    print(pd_game.getHistory())
+    print('Game history: {}'.format(pd_game.getHistory()))
     print('player1: {} \n\n player2: {}'.format(p1, p2))

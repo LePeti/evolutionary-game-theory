@@ -1,4 +1,5 @@
 import numpy as np
+from random import shuffle
 
 
 class Population:
@@ -10,4 +11,7 @@ class Population:
         return np.random.choice(self.players,
                                 size=2,
                                 replace=False)
-        # return [Player(0), Player(0)]
+
+    def pairUpPopulation(self):
+        shuffle(self.players)
+        return list(zip(self.players[::2], self.players[1::2]))

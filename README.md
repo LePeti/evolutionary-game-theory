@@ -2,12 +2,14 @@
 
 ## Plan
 
-### 1. Prisoners Dilemma with two pre-defined strategy
+### 1. Prisoners Dilemma (PD) with two pre-defined strategy
   + No evolution
   + Played for a few rounds
   + Evaluation of the success of the strageties at the end
   + Simple strategies
   + Symmetric payoffs
+
+### 2. Randomly assigned pairs from population
 
 ## Questions & Todos
 

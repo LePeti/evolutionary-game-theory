@@ -1,8 +1,9 @@
 import unittest
+import numpy as np
+
 from game_play import *
 from game import *
 from player import *
-import numpy as np
 
 
 class TestGamePlay(unittest.TestCase):

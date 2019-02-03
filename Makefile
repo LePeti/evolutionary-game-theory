@@ -1,4 +1,4 @@
-.PHONY: help test clean
+.PHONY: help test clean main ipython
 
 .DEFAULT: help
 

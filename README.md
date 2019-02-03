@@ -11,6 +11,8 @@
 
 ### 2. Randomly assigned pairs from population
 
+### 3. Modify simple strategies to automatons
+
 ## Questions & Todos
 
 ### 1. How to install ipython only for development purposes?

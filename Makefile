@@ -15,13 +15,13 @@ help:
 	@echo "       open ipython3"
 
 test: clean
-	pipenv run python -m unittest discover -s tests
+	@pipenv run python -m unittest discover -s tests $(TESTARGS)
 
 clean:
-	find . -name '*.pyc' -delete
+	@find . -name '*.pyc' -delete
 
 make main: clean
-	pipenv run python main.py
+	@pipenv run python main.py
 
 make ipython:
-	pipenv run ipython3
+	@pipenv run ipython3

@@ -1,15 +1,24 @@
-from player import *
-from game import *
-from game_play import *
+from Python.player import *
+from Python.game import *
+from Python.game_play import *
 
 import numpy as np
 
 if __name__ == "__main__":
-    p1 = Player(0)
-    p2 = Player(1)
-    pd = Game(np.array([[2, 0], [4, 1]]))
-    pd_game = GamePlay(p1, p2, pd)
+    np.random.seed(999)
 
-    pd_game.playMultipleRounds(10)
-    print('Game history: {}'.format(pd_game.getHistory()))
-    print('player1: {} \n\n player2: {}'.format(p1, p2))
+    pd = Game(np.array([[2, 0],
+                        [3, 1]]))
+    players = [Player(np.random.choice([0, 1])) for i in range(100)]
+
+    gamePlay = GamePlay(players, pd)
+
+    for i in range(1000):
+        for pair in gamePlay.pairUpPopulation():
+            gamePlay.playMultipleRounds(pair, num_rounds=100)
+
+    players_sorted_by_strat = sorted(
+        players, key=lambda player: player.getAction()
+    )
+    for player in players_sorted_by_strat:
+        print(player)

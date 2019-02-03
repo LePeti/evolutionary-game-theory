@@ -1,6 +1,7 @@
 import unittest
-from game import *
 import numpy as np
+
+from Python.game import *
 
 
 class TestGame(unittest.TestCase):

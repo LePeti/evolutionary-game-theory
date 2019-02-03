@@ -5,10 +5,12 @@ name = "pypi"
 
 [packages]
 numpy = "*"
-ipython = "*"
-mock = "*"
+pipfile = "*"
 
 [dev-packages]
+ipython = "*"
+mock = "*"
+ipdb = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

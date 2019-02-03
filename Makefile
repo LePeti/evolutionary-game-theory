@@ -20,8 +20,8 @@ test: clean
 clean:
 	@find . -name '*.pyc' -delete
 
-make main: clean
+main: clean
 	@pipenv run python main.py
 
-make ipython:
+ipython:
 	@pipenv run ipython3

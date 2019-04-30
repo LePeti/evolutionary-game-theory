@@ -16,6 +16,7 @@ autopep8 = "*"
 rope = "*"
 jupyter = "*"
 ipykernel = "*"
+pep8 = "*"
 
 [requires]
 python_version = "3.7"

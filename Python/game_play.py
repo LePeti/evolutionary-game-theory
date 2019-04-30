@@ -17,16 +17,18 @@ class GamePlay:
     def playGame(self, num_rounds, num_games):
         pass
 
-    def playRound(self, selectedPlayers):
-        actions = tuple(player.getStrategy() for player in selectedPlayers)
-        round_payoffs = self.getPlayerPayoffs(*actions)
-        for player, payoff in zip(selectedPlayers, round_payoffs):
-            player.addPayoffToHistory(payoff)
-        self.addRoundToHistory(actions, round_payoffs)
-
     def playMultipleRounds(self, selectedPlayers, num_rounds=100):
         for _ in range(num_rounds - 1):
             self.playRound(selectedPlayers)
+
+    def playRound(self, selectedPlayers):
+        player1_action = selectedPlayers[0].getStrategy()
+        player2_action = selectedPlayers[1].getStrategy()
+        round_payoffs = self.getPlayerPayoffs(player1_action, player2_action)
+        for player, payoff in zip(selectedPlayers, round_payoffs):
+            player.addPayoffToHistory(payoff)
+        self.addRoundToHistory(
+            tuple(player1_action, player2_action), round_payoffs)
 
     def getPlayerPayoffs(self, player1_action, player2_action):
         return (int(self.game.getPayoff()[player1_action, player2_action]),

@@ -18,7 +18,7 @@ class TestGame(unittest.TestCase):
             game_w_simple_payoff.getPayoff()
         )
 
-    def test_getPayoffHistory_ReturnsPDPO_GivenGameInitialisedWithPDPO(self):
+    def test_getPayoff_ReturnsPDPO_GivenGameInitialisedWithPDPO(self):
         np.testing.assert_array_equal(
             self.pd_payoff,
             self.subject.getPayoff()

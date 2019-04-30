@@ -13,7 +13,8 @@ class TestGamePlay(unittest.TestCase):
         self.pd = Game(np.array([[2, 0],
                                  [4, 1]])
                        )
-        self.players = [Player([0]), Player([1]), Player([1]), Player([1])]
+        self.players = [Player([0, 0, 0]), Player(
+            [1, 0, 0]), Player([1, 0, 0]), Player([1, 0, 0])]
         self.subject = GamePlay(self.players, self.pd)
 
     @patch('Python.player.Player.addPayoffToHistory')
@@ -40,7 +41,7 @@ class TestGamePlay(unittest.TestCase):
         payoffs22 = self.subject.getPlayerPayoffs(0, 0)
         self.assertEqual(payoffs22, (2, 2))
 
-    def test_pairUpPopulation_returnsHalfLengthOfPlayers_givenEvenPlayers(self):
+    def test_pairUpPopulation_returnsHalfLengthOfPlayers_givenEvenPlayer(self):
         self.assertEqual(
             len(self.subject.pairUpPopulation()),
             len(self.subject.population) / 2
@@ -54,7 +55,7 @@ class TestGamePlay(unittest.TestCase):
             len(alt_subject.population) / 2 - 0.5
         )
 
-    def test_pairUpWholePopulation_returnsListOfTuplesWithTwoPlayerInEach(self):
+    def test_pairUpWholePopulation_returnsListOfTuplesWithTwoPlayerEach(self):
         for pair in self.subject.pairUpPopulation():
             self.assertIsInstance(pair, tuple)
             self.assertIsInstance(pair[0], Player)

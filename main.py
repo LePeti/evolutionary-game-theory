@@ -8,8 +8,8 @@ if __name__ == "__main__":
     np.random.seed(999)
 
     pd = Game(np.array([[2, 0],
-                        [3, 1]]))
-    players = [Player(np.random.choice([0, 1])) for i in range(100)]
+                        [4, 1]]))
+    players = [Player([[1, 0, 0]]) for _ in range(100)]
 
     gamePlay = GamePlay(players, pd)
 

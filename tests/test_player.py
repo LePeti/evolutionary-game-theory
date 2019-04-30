@@ -1,6 +1,6 @@
 import unittest
 
-from Python.player import *
+from Python.player import Player
 
 
 class TestPlayer(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestPlayer(unittest.TestCase):
         self.subject = Player(0)
 
     def test_getAction_ReturnsStrat_GivenPlayerInitialisedWithStrat(self):
-        self.assertEqual(0, self.subject.getAction())
+        self.assertEqual(0, self.subject.getStrategy())
 
     def test_getAveragePayoff_returns1_givenPayoffHistory1(self):
         self.subject.addPayoffToHistory(1)
@@ -17,5 +17,5 @@ class TestPlayer(unittest.TestCase):
 
     def test_getAveragePayoff_returns1_givenMultiplePayoffs(self):
         self.subject.addPayoffToHistory(1)
-        self.subject.addPayoffToHistory(0)
-        self.assertEqual(self.subject.getAveragePayoff(), 0.5)
+        self.subject.addPayoffToHistory(1)
+        self.assertEqual(self.subject.getAveragePayoff(), 1)

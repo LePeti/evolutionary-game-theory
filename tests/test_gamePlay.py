@@ -25,7 +25,7 @@ class TestGamePlay(unittest.TestCase):
     def test_playRound_callsaddRoundToHistoryWithCorrectParams(self, mock):
         selectedPlayers = self.players[0:2]
         self.subject.playRound(selectedPlayers)
-        actions = tuple(player.getAction() for player in selectedPlayers)
+        actions = tuple(player.getStrategy() for player in selectedPlayers)
         round_payoffs = self.subject.getPlayerPayoffs(*actions)
         self.assertEqual(mock.call_args_list[0][0][0], actions)
         self.assertEqual(mock.call_args_list[0][0][1], round_payoffs)

@@ -18,14 +18,14 @@ class GamePlay:
         pass
 
     def playRound(self, selectedPlayers):
-        actions = tuple(player.getAction() for player in selectedPlayers)
+        actions = tuple(player.getStrategy() for player in selectedPlayers)
         round_payoffs = self.getPlayerPayoffs(*actions)
         for player, payoff in zip(selectedPlayers, round_payoffs):
             player.addPayoffToHistory(payoff)
         self.addRoundToHistory(actions, round_payoffs)
 
     def playMultipleRounds(self, selectedPlayers, num_rounds=100):
-        for i in range(num_rounds - 1):
+        for _ in range(num_rounds - 1):
             self.playRound(selectedPlayers)
 
     def getPlayerPayoffs(self, player1_action, player2_action):

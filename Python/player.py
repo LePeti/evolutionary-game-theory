@@ -7,7 +7,7 @@ class Player:
         self.strategy = strategy
         self.payoff_history = []
 
-    def getAction(self):
+    def getStrategy(self):
         return self.strategy
 
     def getPayoffHistory(self):
@@ -22,5 +22,5 @@ class Player:
     def __str__(self):
         return ("Player [{}] "
                 "Average payoff: {}").format(
-            self.getAction(),
+            self.getStrategy(),
             self.getAveragePayoff())

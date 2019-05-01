@@ -21,15 +21,36 @@ class Player:
     def __init__(self, strategy):
         self.strategy = strategy
         self.payoff_history = []
+        self.state_index_history = []
 
     def getStrategy(self):
         return self.strategy
 
-    def getCurrentAction(self, last_action_index, opponents_action):
-        last_action_node = self.getStrategy()[last_action_index]
-        current_action_index = last_action_node[opponents_action + 1]
-        current_action = self.getStrategy()[current_action_index][0]
+    def getCurrentAction(self, last_state_index, opponents_last_action):
+        if last_state_index is None:
+            return self.getStrategy()[0][0]
+        last_state = self.getLastState(last_state_index)
+        current_state_index = last_state[opponents_last_action + 1]
+        current_action = self.getStrategy()[current_state_index][0]
         return current_action
+
+    def getStateIndexHistory(self):
+        return self.state_index_history
+
+    def getLastStateIndex(self):
+        if not self.getStateIndexHistory():
+            return None
+        else:
+            return self.getStateIndexHistory()[-1]
+
+    def getLastState(self, last_state_index):
+        if last_state_index is None:
+            return None
+        else:
+            return self.getStrategy()[last_state_index]
+
+    def updateStateIndexHistoryWith(self, state_index):
+        self.getStateIndexHistory().append(state_index)
 
     def getPayoffHistory(self):
         return self.payoff_history

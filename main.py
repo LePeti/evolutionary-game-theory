@@ -10,7 +10,6 @@ if __name__ == "__main__":
     pd = Game(np.array([[2, 0],
                         [4, 1]]))
     players = [Player([[1, 0, 0]]) for _ in range(100)]
-
     gamePlay = GamePlay(players, pd)
 
     for i in range(1000):

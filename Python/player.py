@@ -23,37 +23,32 @@ class Player:
         self.payoff_history = []
         self.state_index_history = []
 
-    def getStrategy(self):
-        return self.strategy
-
-    def getCurrentAction(self, last_state_index, opponents_last_action):
-        if last_state_index is None:
-            return self.getStrategy()[0][0]
-        last_state = self.getLastState(last_state_index)
+    def getCurrentAction(self, opponents_last_action):
+        if self.getLastStateIndex() is None:
+            return self.strategy[0][0]
+        last_state = self.getLastState()
         current_state_index = last_state[opponents_last_action + 1]
-        current_action = self.getStrategy()[current_state_index][0]
+        current_action = self.strategy[current_state_index][0]
         return current_action
 
-    def getStateIndexHistory(self):
-        return self.state_index_history
-
     def getLastStateIndex(self):
-        if not self.getStateIndexHistory():
+        if not self.state_index_history:
             return None
         else:
-            return self.getStateIndexHistory()[-1]
+            return self.state_index_history[-1]
 
-    def getLastState(self, last_state_index):
-        if last_state_index is None:
+    def getLastState(self):
+        if self.getLastStateIndex() is None:
             return None
         else:
-            return self.getStrategy()[last_state_index]
+            return self.strategy[self.getLastStateIndex()]
+
+    def getLastAction(self):
+        if self.getLastState() is None:
+            return self.strategy[0][0]
 
     def updateStateIndexHistoryWith(self, state_index):
-        self.getStateIndexHistory().append(state_index)
-
-    def getPayoffHistory(self):
-        return self.payoff_history
+        self.state_index_history.append(state_index)
 
     def addPayoffToHistory(self, payoff):
         self.payoff_history.append(payoff)
@@ -64,5 +59,5 @@ class Player:
     def __str__(self):
         return ("Player [{}] "
                 "Average payoff: {}").format(
-            self.getStrategy(),
+            self.strategy,
             self.getAveragePayoff())

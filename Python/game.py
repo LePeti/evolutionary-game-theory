@@ -11,8 +11,5 @@ class Game:
     where first action is 'cooperate' and second is 'defect'
     '''
 
-    def __init__(self, payoff):
-        self.payoff = payoff
-
-    def getPayoff(self):
-        return self.payoff
+    def __init__(self, payoffTable):
+        self.payoffTable = payoffTable

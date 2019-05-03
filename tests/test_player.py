@@ -10,9 +10,6 @@ class TestPlayer(unittest.TestCase):
         self.titfortat_strategy = [[0, 0, 1], [1, 0, 1]]
         self.tftPlayer = Player(self.titfortat_strategy)
 
-    def test_getStrat_ReturnsStrat_GivenPlayerInitialisedWithStrat(self):
-        self.assertEqual([[0, 0, 0]], self.simplePlayer.getStrategy())
-
     def test_getAveragePayoff_returns1_givenPayoffHistory1(self):
         self.simplePlayer.addPayoffToHistory(1)
         self.assertEqual(self.simplePlayer.getAveragePayoff(), 1)
@@ -23,11 +20,10 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(self.simplePlayer.getAveragePayoff(), 1)
 
     def test_getCurrentAction_returnsFirstNodesAction_notGivenParams(self):
-        last_state_index = None
         opponents_last_action = None
 
         actual_action = self.simplePlayer.getCurrentAction(
-            last_state_index, opponents_last_action)
+            opponents_last_action)
         expected_action = 0
         self.assertEqual(expected_action, actual_action)
 
@@ -36,19 +32,20 @@ class TestPlayer(unittest.TestCase):
         opponents_last_action = 0
 
         actual_action = self.simplePlayer.getCurrentAction(
-            last_action_index, opponents_last_action)
+            opponents_last_action)
         expected_action = 0
         self.assertEqual(expected_action, actual_action)
 
     def test_getCurrentAction_returnsCorrectActions_givenParams(self):
         actual_first_action = self.tftPlayer.getCurrentAction(
-            last_state_index=None, opponents_last_action=None)
+            opponents_last_action=None)
         expected_first_action = 0
 
         self.assertEqual(expected_first_action, actual_first_action)
 
+        self.tftPlayer.updateStateIndexHistoryWith(expected_first_action)
         actual_second_action = self.tftPlayer.getCurrentAction(
-            last_state_index=0, opponents_last_action=1)
+            opponents_last_action=1)
         expected_second_action = 1
 
         self.assertEqual(expected_second_action, actual_second_action)
@@ -66,14 +63,12 @@ class TestPlayer(unittest.TestCase):
         self.tftPlayer.updateStateIndexHistoryWith(1)
 
         expected_state = self.titfortat_strategy[1]
-        actual_state = self.tftPlayer.getLastState(
-            self.tftPlayer.getLastStateIndex())
+        actual_state = self.tftPlayer.getLastState()
 
         self.assertEqual(expected_state, actual_state)
 
     def test_getLastState_returnsNone_givenEmptyStateHistory(self):
         expected_state = None
-        actual_state = self.tftPlayer.getLastState(
-            self.tftPlayer.getLastStateIndex())
+        actual_state = self.tftPlayer.getLastState()
 
         self.assertEqual(expected_state, actual_state)

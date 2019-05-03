@@ -2,23 +2,20 @@
 
 ## Plan
 
-### 1. Prisoners Dilemma (PD) with two pre-defined strategy
-  + No evolution
-  + Played for a few rounds
-  + Evaluation of the success of the strageties at the end
-  + Simple strategies
-  + Symmetric payoffs
+### 1. [done] Randomly assigned pairs from population
 
-### 2. Randomly assigned pairs from population
+### 2. [done] Modify simple strategies to automatons
 
-### 3. Modify simple strategies to automatons
+### 3. Implement mutation
 
 ## Questions & Todos
 
-### 1. How to install ipython only for development purposes?
-  + I don't want it to be installed in production
-  + Or on others computer who doesn't develop
+### 1. How to handle: if player plays round then her history should be updated
 
-### 2. How to use private methdos (_)?
+### 2. GameHistory: figure out metrics to measure and adapt game history to it
 
-### 3. Add logging
+### 3. Add private methdos (_)?
+
+### 4. Use @properties, @classmethods and @staticmethods
+
+### 5. Add logging

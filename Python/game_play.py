@@ -12,7 +12,7 @@ class GamePlay:
     def __init__(self, population, game):
         self.population = population
         self.game = game
-        self.history = []
+        self.game_history = []
 
     def playGame(self, num_rounds, num_games):
         pass
@@ -21,24 +21,29 @@ class GamePlay:
         for _ in range(num_rounds - 1):
             self.playRound(selectedPlayers)
 
-    def playRound(self, selectedPlayers):
-        player1_action = selectedPlayers[0].getStrategy()
-        player2_action = selectedPlayers[1].getStrategy()
-        round_payoffs = self.getPlayerPayoffs(player1_action, player2_action)
-        for player, payoff in zip(selectedPlayers, round_payoffs):
-            player.addPayoffToHistory(payoff)
-        self.addRoundToHistory(
-            tuple(player1_action, player2_action), round_payoffs)
+    def playRound(self, player1, player2):
+        player1_action = player1.getCurrentAction(player2.getLastAction())
+        player2_action = player2.getCurrentAction(player1.getLastAction())
+        player1_payoff = self.getRowPlayersPayoffs(
+            player1_action, player2_action)
+        player2_payoff = self.getRowPlayersPayoffs(
+            player2_action, player1_action)
+        player1.addPayoffToHistory(player1_payoff)
+        player2.addPayoffToHistory(player2_payoff)
+        self.addRoundToGameHistory(
+            player1_action, player2_action, player1_payoff, player2_payoff)
 
-    def getPlayerPayoffs(self, player1_action, player2_action):
-        return (int(self.game.getPayoff()[player1_action, player2_action]),
-                int(self.game.getPayoff()[player2_action, player1_action]))
+    def getRowPlayersPayoffs(self, player1_action, player2_action):
+        return int(self.game.payoffTable[player1_action, player2_action])
 
-    def addRoundToHistory(self, actions, payoffs):
-        return self.history.append([actions, payoffs])
-
-    def getHistory(self):
-        return self.history
+    def addRoundToGameHistory(self, player1_action, player2_action,
+                              player1_payoff, player2_payoff):
+        return self.game_history.append(
+            {
+                'p1_payoff': player1_payoff, 'p2_payoff': player2_payoff,
+                'p1_action': player1_action, 'p2_action': player2_action,
+            }
+        )
 
     def pairUpPopulation(self):
         np.random.shuffle(self.population)

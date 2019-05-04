@@ -31,6 +31,12 @@ class Player:
         current_action = self.strategy[current_state_index][0]
         return current_action
 
+    def getLastAction(self):
+        if self.getLastState() is None:
+            return self.strategy[0][0]
+        else:
+            return self.getLastState()[0]
+
     def getLastStateIndex(self):
         if not self.state_index_history:
             return None

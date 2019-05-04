@@ -62,3 +62,11 @@ class TestPlayer(unittest.TestCase):
 
     def test_getLastState_returnsNone_givenEmptyStateHistory(self):
         self.assertEqual(None, self.tftPlayer.getLastState())
+
+    def test_getLastAction_returnsDefaultActn_givenEmptyStateIndxHistory(self):
+        self.assertEqual(0, self.simplePlayer.getLastAction())
+
+    def test_getLastAction_returnsCorrectly_givenNonEmptyStateIndxHstry(self):
+        self.tftPlayer.updateStateIndexHistoryWith(1)
+
+        self.assertEqual(1, self.tftPlayer.getLastAction())

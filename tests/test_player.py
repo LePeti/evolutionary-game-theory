@@ -19,15 +19,9 @@ class TestPlayer(unittest.TestCase):
         self.simplePlayer.addPayoffToHistory(1)
         self.assertEqual(self.simplePlayer.getAveragePayoff(), 1)
 
-    def test_getCurrentAction_returnsFirstNodesAction_notGivenParams(self):
+    def test_getCurrentAction_returnsFirstNodesAction_woStateIndexHistry(self):
         actual_action = self.simplePlayer.getCurrentAction(
             opponents_last_action=None)
-
-        self.assertEqual(0, actual_action)
-
-    def test_getCurrentAction_returnsCorrectAction_givenParams(self):
-        actual_action = self.simplePlayer.getCurrentAction(
-            opponents_last_action=0)
 
         self.assertEqual(0, actual_action)
 

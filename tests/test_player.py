@@ -1,4 +1,6 @@
 import unittest
+from mock import patch
+
 
 from Python.player import Player
 
@@ -36,6 +38,19 @@ class TestPlayer(unittest.TestCase):
             opponents_last_action=1)
 
         self.assertEqual(1, actual_second_action)
+
+    @patch('Python.player.Player.updateStateIndexHistoryWith')
+    def test_getCurrentAction_UpdatesStateIndexHistoryWith_noHist(self, mock):
+        self.tftPlayer.getCurrentAction(opponents_last_action=None)
+
+        self.assertEqual(1, mock.call_count)
+
+    @patch('Python.player.Player.updateStateIndexHistoryWith')
+    def test_getCurrentAction_UpdatesStateIndexHistoryWith_wHist(self, mock):
+        self.tftPlayer.state_index_history.append(0)
+        self.tftPlayer.getCurrentAction(opponents_last_action=0)
+
+        self.assertEqual(1, mock.call_count)
 
     def test_getLastStateIndex_returnsNone_givenEmptyStateHistory(self):
         self.assertEqual(None, self.simplePlayer.getLastStateIndex())

@@ -52,6 +52,21 @@ class TestPlayer(unittest.TestCase):
 
         self.assertEqual(1, mock.call_count)
 
+    @patch('Python.player.Player.updateStateIndexHistoryWith')
+    def test_getCurrentAction_crrctlyCllsUpdtStateIdxHistry_woHist(self, mock):
+        self.tftPlayer.getCurrentAction(
+            opponents_last_action=0)
+
+        self.assertEqual(mock.call_args_list[0][0][0], 0)
+
+    @patch('Python.player.Player.updateStateIndexHistoryWith')
+    def test_getCurrentAction_correctlyCallsUpdtStateIndexHistory(self, mock):
+        self.tftPlayer.state_index_history.append(0)
+        current_action = self.tftPlayer.getCurrentAction(
+            opponents_last_action=0)
+
+        self.assertEqual(mock.call_args_list[0][0][0], current_action)
+
     def test_getLastStateIndex_returnsNone_givenEmptyStateHistory(self):
         self.assertEqual(None, self.simplePlayer.getLastStateIndex())
 

@@ -43,10 +43,6 @@ class Player:
         else:
             return self.strategy[self.getLastStateIndex()]
 
-    def getLastAction(self):
-        if self.getLastState() is None:
-            return self.strategy[0][0]
-
     def updateStateIndexHistoryWith(self, state_index):
         self.state_index_history.append(state_index)
 

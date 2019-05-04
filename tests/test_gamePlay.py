@@ -11,11 +11,9 @@ class TestGamePlay(unittest.TestCase):
 
     def setUp(self):
         self.pd = Game(np.array([[2, 0],
-                                 [4, 1]])
-                       )
-        self.players = [Player([[0, 0, 0]]), Player(
-            [[1, 0, 0]]), Player([[1, 0, 0]]), Player([[1, 0, 0]])]
-        self.subject = GamePlay(self.players, self.pd)
+                                 [4, 1]]))
+        self.players = [Player([[0, 0, 0]]), Player([[1, 0, 0]])]
+        self.subject = GamePlay(population=self.players, game=self.pd)
 
     @patch('Python.player.Player.addPayoffToHistory')
     def test_playRound_callsaddPayoffToHistoryTwice(self, mock):
@@ -24,11 +22,10 @@ class TestGamePlay(unittest.TestCase):
 
     @patch('Python.game_play.GamePlay.addRoundToGameHistory')
     def test_playRound_callsaddRoundToGameHistoryWithCorrectParams(self, mock):
-        selectedPlayers = self.players[0:2]
-        self.subject.playRound(*selectedPlayers)
+        self.subject.playRound(*self.players)
 
-        p1_action = selectedPlayers[0].strategy[0][0]
-        p2_action = selectedPlayers[1].strategy[0][0]
+        p1_action = self.players[0].strategy[0][0]
+        p2_action = self.players[1].strategy[0][0]
         p1_payoff = self.subject.getRowPlayersPayoffs(p1_action, p2_action)
         p2_payoff = self.subject.getRowPlayersPayoffs(p2_action, p1_action)
 
@@ -38,14 +35,9 @@ class TestGamePlay(unittest.TestCase):
         self.assertEqual(mock.call_args_list[0][0][3], p2_payoff)
 
     def test_getPlayerPayoffs_returnsProperPdPayoffs(self):
-        expected_payoff = self.subject.getRowPlayersPayoffs(0, 1)
-        self.assertEqual(expected_payoff, 0)
-
-        expected_payoff = self.subject.getRowPlayersPayoffs(1, 1)
-        self.assertEqual(expected_payoff, 1)
-
-        expected_payoff = self.subject.getRowPlayersPayoffs(0, 0)
-        self.assertEqual(expected_payoff, 2)
+        self.assertEqual(self.subject.getRowPlayersPayoffs(0, 1), 0)
+        self.assertEqual(self.subject.getRowPlayersPayoffs(1, 1), 1)
+        self.assertEqual(self.subject.getRowPlayersPayoffs(0, 0), 2)
 
     def test_pairUpPopulation_returnsHalfLengthOfPlayers_givenEvenPlayer(self):
         self.assertEqual(
@@ -54,11 +46,11 @@ class TestGamePlay(unittest.TestCase):
         )
 
     def test_pairUpPop_returnsHalfLengthOfPlyrsMinusHalf_givenOddPlayers(self):
-        players = [Player(np.random.choice([0, 1])) for i in range(7)]
-        alt_subject = GamePlay(players, self.pd)
+        players = [Player([0, 0, 0]) for i in range(7)]
+        gameplay = GamePlay(players, self.pd)
         self.assertEqual(
-            len(alt_subject.pairUpPopulation()),
-            len(alt_subject.population) / 2 - 0.5
+            len(gameplay.pairUpPopulation()),
+            len(gameplay.population) / 2 - 0.5
         )
 
     def test_pairUpWholePopulation_returnsListOfTuplesWithTwoPlayerEach(self):

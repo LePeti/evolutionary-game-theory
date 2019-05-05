@@ -60,6 +60,11 @@ class Player:
     def getAveragePayoff(self):
         return np.mean(self.payoff_history)
 
+    def changeRandomStateAction(self):
+        random_state_index = np.random.randint(0, len(self.strategy))
+        self.strategy[random_state_index][0] = \
+            self.strategy[random_state_index][0] * -1 + 1
+
     def __str__(self):
         return ("Player [{}] "
                 "Average payoff: {}").format(

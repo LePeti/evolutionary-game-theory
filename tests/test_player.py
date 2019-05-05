@@ -1,7 +1,6 @@
 import unittest
 from mock import patch
 
-
 from Python.player import Player
 
 
@@ -94,3 +93,15 @@ class TestPlayer(unittest.TestCase):
         self.tftPlayer.updateStateIndexHistoryWith(1)
 
         self.assertEqual(1, self.tftPlayer.getLastAction())
+
+    def test_changeRandomStateAction_changesStateAction(self):
+        self.simplePlayer.changeRandomStateAction()
+
+        self.assertEqual(1, self.simplePlayer.strategy[0][0])
+
+    @patch('numpy.random.randint')
+    def test_changeRandomStateAction_changesStateAction2(self, mock):
+        mock.return_value = 1
+        self.tftPlayer.changeRandomStateAction()
+
+        self.assertEqual(0, self.tftPlayer.strategy[0][0])

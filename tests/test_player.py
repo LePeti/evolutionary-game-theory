@@ -105,3 +105,15 @@ class TestPlayer(unittest.TestCase):
         self.tftPlayer.changeRandomStateAction()
 
         self.assertEqual(0, self.tftPlayer.strategy[0][0])
+
+    @patch('numpy.random.choice')
+    def test_rewireRandomTransition_givenExtendedTFT(self, mock):
+        mock.side_effect = [1, 1, 1]
+        self.tftPlayer.strategy.append([1, 2, 2])
+        self.tftPlayer.rewireRandomTransition()
+
+        self.assertEqual(1, self.tftPlayer.strategy[1][1])
+
+    def test_rewireRandomTransition_returnsError_givenOneState(self):
+        with self.assertRaises(Exception):
+            self.simplePlayer.rewireRandomTransition()

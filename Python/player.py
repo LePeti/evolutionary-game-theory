@@ -61,9 +61,24 @@ class Player:
         return np.mean(self.payoff_history)
 
     def changeRandomStateAction(self):
-        random_state_index = np.random.randint(0, len(self.strategy))
+        random_state_index = np.random.randint(len(self.strategy))
         self.strategy[random_state_index][0] = \
             self.strategy[random_state_index][0] * -1 + 1
+
+    def rewireRandomTransition(self):
+        if len(self.strategy) == 1:
+            raise Exception(
+                f'Cannot rewire single state strategy ({self.strategy})'
+            )
+        state_indexes = list(range(len(self.strategy)))
+        random_state_index = np.random.choice(state_indexes)
+        random_transition_index = np.random.choice([1, 2])
+        available_new_state_indexes = list(set(state_indexes) - set(
+                [self.strategy[random_state_index][random_transition_index]])
+        )
+        new_random_state_index = np.random.choice(available_new_state_indexes)
+        self.strategy[random_state_index][random_transition_index] = \
+            new_random_state_index
 
     def __str__(self):
         return ("Player [{}] "

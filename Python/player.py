@@ -80,6 +80,21 @@ class Player:
         self.strategy[random_state_index][random_transition_index] = \
             new_random_state_index
 
+    def addNewState(self):
+        self._constructAndAppendNewState()
+        self._connectRndNotLastStateWithLastState()
+
+    def _constructAndAppendNewState(self):
+        new_action = np.random.choice([0, 1])
+        new_transitions = np.random.choice([0, 1], size=2)
+        self.strategy.append([new_action] + list(new_transitions))
+
+    def _connectRndNotLastStateWithLastState(self):
+        rnd_but_not_last_state_index = np.random.choice(len(self.strategy) - 1)
+        rnd_transition_index = np.random.choice([1, 2])
+        self.strategy[rnd_but_not_last_state_index][rnd_transition_index] = \
+            len(self.strategy) - 1
+
     def __str__(self):
         return ("Player [{}] "
                 "Average payoff: {}").format(

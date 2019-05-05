@@ -117,3 +117,39 @@ class TestPlayer(unittest.TestCase):
     def test_rewireRandomTransition_returnsError_givenOneState(self):
         with self.assertRaises(Exception):
             self.simplePlayer.rewireRandomTransition()
+
+    def test_addNewState_addsNewStateToStrategy(self):
+        old_strategy_len = len(self.simplePlayer.strategy)
+        self.simplePlayer.addNewState()
+
+        self.assertEqual(old_strategy_len + 1, len(self.simplePlayer.strategy))
+
+    def test_addNewState_addsStateWith3Elements(self):
+        self.simplePlayer.addNewState()
+
+        self.assertEqual(3, len(self.simplePlayer.strategy[-1]))
+
+    @patch('Python.player.Player._connectRndNotLastStateWithLastState')
+    @patch('numpy.random.choice')
+    def test_addNewState_addsStateWith0or1AsFirstElement(self, rndChcMck, _):
+        self.simplePlayer.addNewState()
+
+        self.assertEqual(rndChcMck.call_args_list[0][0][0], [0, 1])
+
+    @patch('Python.player.Player._connectRndNotLastStateWithLastState')
+    @patch('numpy.random.choice')
+    def test_addNewState_assigns0or1TransitionsRandomly(self, rndChcMck, _):
+        self.simplePlayer.addNewState()
+
+        self.assertEqual(rndChcMck.call_args_list[1][0][0], [0, 1])
+
+    def test_addNewState_hasAtLeastOneOtherStatePointingToIt(self):
+        self.tftPlayer.addNewState()
+        new_state_index = len(self.tftPlayer.strategy) - 1
+
+        transitions = []
+
+        for state in self.tftPlayer.strategy[:-1]:
+            for transition in state[1:]:
+                transitions.append(transition)
+        self.assertTrue(new_state_index in transitions)

@@ -95,6 +95,14 @@ class Player:
         self.strategy[rnd_but_not_last_state_index][rnd_transition_index] = \
             len(self.strategy) - 1
 
+    def removeState(self):
+        if len(self.strategy) == 1:
+            raise Exception(
+                f'Cannot remove state from single state strategy: '
+                f'{self.strategy}')
+        random_state_index = np.random.choice(range(len(self.strategy)))
+        self.strategy.pop(random_state_index)
+
     def __str__(self):
         return ("Player [{}] "
                 "Average payoff: {}").format(

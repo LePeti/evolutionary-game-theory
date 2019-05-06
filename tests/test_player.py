@@ -118,7 +118,7 @@ class TestPlayer(unittest.TestCase):
         with self.assertRaises(Exception):
             self.simplePlayer.rewireRandomTransition()
 
-    def test_addNewState_addsNewStateToStrategy(self):
+    def test_addNewState_addsOneNewStateToStrategy(self):
         old_strategy_len = len(self.simplePlayer.strategy)
         self.simplePlayer.addNewState()
 
@@ -153,3 +153,23 @@ class TestPlayer(unittest.TestCase):
             for transition in state[1:]:
                 transitions.append(transition)
         self.assertTrue(new_state_index in transitions)
+
+    def test_removeState_removesOneState(self):
+        old_strategy_len = len(self.tftPlayer.strategy)
+        self.tftPlayer.removeState()
+
+        self.assertEqual(old_strategy_len - 1, len(self.tftPlayer.strategy))
+
+    @patch('numpy.random.choice')
+    def test_removeState_choiceCalledWithCorrectParam(self, mock):
+        old_strategy_length = len(self.tftPlayer.strategy)
+        self.tftPlayer.removeState()
+
+        self.assertEqual(
+            range(old_strategy_length),
+            mock.call_args_list[0][0][0]
+        )
+
+    def test_removeState_raisesException_ifCalledOnSingleStateStrategy(self):
+        with self.assertRaises(Exception):
+            self.simplePlayer.removeState()

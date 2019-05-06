@@ -173,3 +173,12 @@ class TestPlayer(unittest.TestCase):
     def test_removeState_raisesException_ifCalledOnSingleStateStrategy(self):
         with self.assertRaises(Exception):
             self.simplePlayer.removeState()
+
+    # @ patch('Python.player.np.random.choice')
+    # def test_randomlyMutateStrategy_mutatesIfFirstFindsError(self, mock):
+    #     mock.side_effect = [
+    #         self.simplePlayer.removeState,
+    #         self.simplePlayer.addNewState
+    #     ]
+
+    #     self.simplePlayer.randomlyMutateStrategy()

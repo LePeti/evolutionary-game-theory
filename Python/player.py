@@ -103,6 +103,24 @@ class Player:
         random_state_index = np.random.choice(range(len(self.strategy)))
         self.strategy.pop(random_state_index)
 
+    def randomlyMutateStrategy(self):
+        random_mutation = np.random.choice([
+            self.removeState,
+            self.addNewState,
+            self.rewireRandomTransition,
+            self.changeRandomStateAction
+        ])
+
+        print(random_mutation.__name__)
+
+        try:
+            random_mutation()
+        except Exception as Error:
+            print(Error)
+            self.randomlyMutateStrategy()
+
+        return self.strategy
+
     def __str__(self):
         return ("Player [{}] "
                 "Average payoff: {}").format(

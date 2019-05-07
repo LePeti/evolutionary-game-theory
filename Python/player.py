@@ -102,6 +102,17 @@ class Player:
                 f'{self.strategy}')
         random_state_index = np.random.choice(range(len(self.strategy)))
         self.strategy.pop(random_state_index)
+        self._rewireTransitionsPointingToRemovedState()
+
+    def _rewireTransitionsPointingToRemovedState(self):
+        available_states = range(len(self.strategy))
+
+        for state_index, state in enumerate(self.strategy):
+            for transition_index, transition in enumerate(state[1:]):
+                if transition not in available_states:
+                    new_random_state_index = np.random.choice(available_states)
+                    self.strategy[state_index][transition_index + 1] = \
+                        new_random_state_index
 
     def randomlyMutateStrategy(self):
         random_mutation = np.random.choice([

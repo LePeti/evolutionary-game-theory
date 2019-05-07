@@ -1,5 +1,6 @@
 import unittest
 from mock import patch
+import numpy as np
 
 from Python.player import Player
 
@@ -170,15 +171,29 @@ class TestPlayer(unittest.TestCase):
             mock.call_args_list[0][0][0]
         )
 
+    def test_rmvState_remainingTransitsPointToExistingStates(self):
+        np.random.seed(99)
+        self.tftPlayer.removeState()
+        available_states = range(len(self.tftPlayer.strategy))
+
+        for state in self.tftPlayer.strategy:
+            for transition in state[1:]:
+                print(f'Transition #{transition} is in states: {transition in available_states}')
+                self.assertTrue(transition in available_states)
+
     def test_removeState_raisesException_ifCalledOnSingleStateStrategy(self):
         with self.assertRaises(Exception):
             self.simplePlayer.removeState()
 
-    # @ patch('Python.player.np.random.choice')
-    # def test_randomlyMutateStrategy_mutatesIfFirstFindsError(self, mock):
-    #     mock.side_effect = [
-    #         self.simplePlayer.removeState,
-    #         self.simplePlayer.addNewState
-    #     ]
+    @ patch('Python.player.np.random.choice')
+    @ patch('Python.player.Player.addNewState')
+    def test_rndmlyMutateStrat_mutatesIfFrstFindsErr(self, NwStateMck, rndMck):
+        rndMck.side_effect = [
+            self.simplePlayer.removeState,
+            self.simplePlayer.addNewState
+        ]
+        NwStateMck.__name__ = "newState_mock"
 
-    #     self.simplePlayer.randomlyMutateStrategy()
+        self.simplePlayer.randomlyMutateStrategy()
+
+        NwStateMck.assert_called_once()

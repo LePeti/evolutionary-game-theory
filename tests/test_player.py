@@ -178,7 +178,6 @@ class TestPlayer(unittest.TestCase):
 
         for state in self.tftPlayer.strategy:
             for transition in state[1:]:
-                print(f'Transition #{transition} is in states: {transition in available_states}')
                 self.assertTrue(transition in available_states)
 
     def test_removeState_raisesException_ifCalledOnSingleStateStrategy(self):

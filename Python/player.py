@@ -102,6 +102,7 @@ class Player:
                 f'{self.strategy}')
         random_state_index = np.random.choice(range(len(self.strategy)))
         self.strategy.pop(random_state_index)
+
         self._rewireTransitionsPointingToRemovedState()
 
     def _rewireTransitionsPointingToRemovedState(self):

@@ -12,12 +12,19 @@ if __name__ == "__main__":
     players = [Player([[1, 0, 0]]) for _ in range(100)]
     gamePlay = GamePlay(players, pd)
 
-    for i in range(1000):
-        for pair in gamePlay.pairUpPopulation():
-            gamePlay.playMultipleRounds(*pair, num_rounds=100)
+    # Play the game
+    for i in range(100):
+        print(f'pairing: {i}')
+        gamePlay.playMultipleRoundsInPairs(100)
+
+    # Reproduce
+
+    # Mutate
+
+    # Play again
 
     players_sorted_by_strat = sorted(
-        players, key=lambda player: player.getAction()
+        players, key=lambda player: player.strategy
     )
     for player in players_sorted_by_strat:
         print(player)

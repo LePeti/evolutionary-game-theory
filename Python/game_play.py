@@ -17,6 +17,10 @@ class GamePlay:
     def playGame(self, num_rounds, num_games):
         pass
 
+    def playMultipleRoundsInPairs(self, num_rounds):
+        for pair in self.pairUpPopulation():
+            self.playMultipleRounds(*pair, num_rounds)
+
     def playMultipleRounds(self, player1, player2, num_rounds=100):
         for _ in range(num_rounds - 1):
             self.playRound(player1, player2)
@@ -40,6 +44,7 @@ class GamePlay:
                               player1_payoff, player2_payoff):
         return self.game_history.append(
             {
+                'generation': 1,
                 'p1_payoff': player1_payoff, 'p2_payoff': player2_payoff,
                 'p1_action': player1_action, 'p2_action': player2_action,
             }

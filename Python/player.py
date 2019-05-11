@@ -10,7 +10,7 @@ class Player:
     An example strategy is Tit-for-tat: you start with 'cooperation'
     and then do what your opponent did last round. It's represented like so:
 
-    [['C', 0, 1], ['D', 0, 1]]
+    [[0, 0, 1], [1, 0, 1]]
 
     The first string in the tuple is the action, the second element in
     the tuple is the transition which tells you to which state (node)

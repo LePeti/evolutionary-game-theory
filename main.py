@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     for i in range(1000):
         for pair in gamePlay.pairUpPopulation():
-            gamePlay.playMultipleRounds(pair, num_rounds=100)
+            gamePlay.playMultipleRounds(*pair, num_rounds=100)
 
     players_sorted_by_strat = sorted(
         players, key=lambda player: player.getAction()

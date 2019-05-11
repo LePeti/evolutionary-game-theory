@@ -17,22 +17,35 @@ class TestGamePlay(unittest.TestCase):
 
     @patch('Python.player.Player.addPayoffToHistory')
     def test_playRound_callsaddPayoffToHistoryTwice(self, mock):
-        self.subject.playRound(self.players[0], self.players[1])
+        self.subject.playRound(self.players[0], self.players[1],
+                               ith_pair=None, ith_round=None, ith_pairing=None)
         self.assertEqual(mock.call_count, 2)
 
     @patch('Python.game_play.GamePlay.addRoundToGameHistory')
     def test_playRound_callsaddRoundToGameHistoryWithCorrectParams(self, mock):
-        self.subject.playRound(*self.players)
+        ith_pair = None
+        ith_round = None
+        ith_pairing = None
 
+        self.subject.playRound(*self.players,ith_pair=ith_pair,
+                               ith_round=ith_round, ith_pairing=ith_pairing)
+
+        p1_strat = self.players[0].strategy
+        p2_strat = self.players[1].strategy
         p1_action = self.players[0].strategy[0][0]
         p2_action = self.players[1].strategy[0][0]
         p1_payoff = self.subject.getRowPlayersPayoffs(p1_action, p2_action)
         p2_payoff = self.subject.getRowPlayersPayoffs(p2_action, p1_action)
 
-        self.assertEqual(mock.call_args_list[0][0][0], p1_action)
-        self.assertEqual(mock.call_args_list[0][0][1], p2_action)
-        self.assertEqual(mock.call_args_list[0][0][2], p1_payoff)
-        self.assertEqual(mock.call_args_list[0][0][3], p2_payoff)
+        self.assertEqual(mock.call_args_list[0][0][0], ith_round)
+        self.assertEqual(mock.call_args_list[0][0][1], ith_pair)
+        self.assertEqual(mock.call_args_list[0][0][2], ith_pairing)
+        self.assertEqual(mock.call_args_list[0][0][3], p1_strat)
+        self.assertEqual(mock.call_args_list[0][0][4], p2_strat)
+        self.assertEqual(mock.call_args_list[0][0][5], p1_action)
+        self.assertEqual(mock.call_args_list[0][0][6], p2_action)
+        self.assertEqual(mock.call_args_list[0][0][7], p1_payoff)
+        self.assertEqual(mock.call_args_list[0][0][8], p2_payoff)
 
     def test_getPlayerPayoffs_returnsProperPdPayoffs(self):
         self.assertEqual(self.subject.getRowPlayersPayoffs(0, 1), 0)

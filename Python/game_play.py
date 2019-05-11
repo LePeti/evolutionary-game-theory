@@ -17,9 +17,9 @@ class GamePlay:
     def playGame(self, num_rounds, num_games):
         pass
 
-    def playMultipleRounds(self, selectedPlayers, num_rounds=100):
+    def playMultipleRounds(self, player1, player2, num_rounds=100):
         for _ in range(num_rounds - 1):
-            self.playRound(selectedPlayers)
+            self.playRound(player1, player2)
 
     def playRound(self, player1, player2):
         player1_action = player1.getCurrentAction(player2.getLastAction())

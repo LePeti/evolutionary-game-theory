@@ -2,9 +2,9 @@ import unittest
 import numpy as np
 from mock import patch
 
-from Python.game_play import *
-from Python.game import *
-from Python.player import *
+from Python.game_play import GamePlay
+from Python.game import Game
+from Python.player import Player
 
 
 class TestGamePlay(unittest.TestCase):
@@ -37,15 +37,23 @@ class TestGamePlay(unittest.TestCase):
         p1_payoff = self.subject.getRowPlayersPayoffs(p1_action, p2_action)
         p2_payoff = self.subject.getRowPlayersPayoffs(p2_action, p1_action)
 
-        self.assertEqual(mock.call_args_list[0][0][0], ith_round)
-        self.assertEqual(mock.call_args_list[0][0][1], ith_pair)
-        self.assertEqual(mock.call_args_list[0][0][2], ith_pairing)
-        self.assertEqual(mock.call_args_list[0][0][3], p1_strat)
-        self.assertEqual(mock.call_args_list[0][0][4], p2_strat)
+        self.assertEqual(mock.call_args_list[0][0][0], id(self.players[0]))
+        self.assertEqual(mock.call_args_list[0][0][1], ith_round)
+        self.assertEqual(mock.call_args_list[0][0][2], ith_pair)
+        self.assertEqual(mock.call_args_list[0][0][3], ith_pairing)
+        self.assertEqual(mock.call_args_list[0][0][4], p1_strat)
         self.assertEqual(mock.call_args_list[0][0][5], p1_action)
-        self.assertEqual(mock.call_args_list[0][0][6], p2_action)
-        self.assertEqual(mock.call_args_list[0][0][7], p1_payoff)
-        self.assertEqual(mock.call_args_list[0][0][8], p2_payoff)
+        self.assertEqual(mock.call_args_list[0][0][6], p1_payoff)
+        self.assertEqual(mock.call_args_list[0][0][7], id(self.players[1]))
+
+        self.assertEqual(mock.call_args_list[1][0][0], id(self.players[1]))
+        self.assertEqual(mock.call_args_list[1][0][1], ith_round)
+        self.assertEqual(mock.call_args_list[1][0][2], ith_pair)
+        self.assertEqual(mock.call_args_list[1][0][3], ith_pairing)
+        self.assertEqual(mock.call_args_list[1][0][4], p2_strat)
+        self.assertEqual(mock.call_args_list[1][0][5], p2_action)
+        self.assertEqual(mock.call_args_list[1][0][6], p2_payoff)
+        self.assertEqual(mock.call_args_list[1][0][7], id(self.players[0]))
 
     def test_getPlayerPayoffs_returnsProperPdPayoffs(self):
         self.assertEqual(self.subject.getRowPlayersPayoffs(0, 1), 0)

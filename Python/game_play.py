@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 
 class GamePlay:
@@ -12,7 +13,7 @@ class GamePlay:
     def __init__(self, population, game):
         self.population = population
         self.game = game
-        self.game_history = []
+        self.game_history = pd.DataFrame()
 
     def playGame(self, num_rounds, num_games):
         pass
@@ -38,26 +39,27 @@ class GamePlay:
         player1.addPayoffToHistory(player1_payoff)
         player2.addPayoffToHistory(player2_payoff)
         self.addRoundToGameHistory(
-            ith_round, ith_pair, ith_pairing,
-            player1.strategy, player2.strategy,
-            player1_action, player2_action,
-            player1_payoff, player2_payoff)
+            id(player1), ith_round, ith_pair, ith_pairing,
+            player1.strategy, player1_action, player1_payoff, id(player2)
+        )
+        self.addRoundToGameHistory(
+            id(player2), ith_round, ith_pair, ith_pairing,
+            player2.strategy, player2_action, player2_payoff, id(player1)
+        )
 
     def getRowPlayersPayoffs(self, player1_action, player2_action):
         return int(self.game.payoffTable[player1_action, player2_action])
 
-    def addRoundToGameHistory(self, ith_round, ith_pair, ith_pairing,
-                              player1_strat, player2_strat,
-                              player1_action, player2_action,
-                              player1_payoff, player2_payoff):
-        return self.game_history.append(
+    def addRoundToGameHistory(self, player_id, ith_round, ith_pair, ith_pairing,
+                              strat, action, payoff, opponents_id):
+        self.game_history = self.game_history.append(
             {
+                'player_id': player_id,
                 'generation': None, 'ith_pairing': ith_pairing,
                 'ith_pair': ith_pair, 'ith_round': ith_round,
-                'p1_strategy': player1_strat, 'p2_strategy': player2_strat,
-                'p1_payoff': player1_payoff, 'p2_payoff': player2_payoff,
-                'p1_action': player1_action, 'p2_action': player2_action,
-            }
+                'strategy': strat, 'action': action, 'payoff': payoff,
+                'opponents_id': opponents_id
+            }, ignore_index=True
         )
 
     def pairUpPopulation(self):

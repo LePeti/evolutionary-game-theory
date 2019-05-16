@@ -9,14 +9,16 @@ if __name__ == "__main__":
 
     pd = Game(np.array([[2, 0],
                         [4, 1]]))
-    players = [Player([[1, 0, 0]]) for _ in range(10)]
-    gamePlay = GamePlay(players, pd)
+    players = [Player([[1, 0, 0]]) for _ in range(4)]
     num_pairing = 2
+    gamePlay = GamePlay(players, pd)
 
     # Play the game
     for i in range(num_pairing):
         print(f'pairing: {i}')
         gamePlay.playMultipleRoundsInPairs(ith_pairing=i, num_rounds=10)
+
+    print(gamePlay.calcRelativeStratSuccess())
 
     # Reproduce
 

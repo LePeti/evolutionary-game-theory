@@ -49,13 +49,12 @@ class GamePlay:
 
     def addRoundToGameHistory(self, player_id, ith_round, ith_pair, ith_pairing,
                               strat, action, payoff, opponents_id):
-        tuple_strat = tuple(tuple(list_elem) for list_elem in strat)
         self.game_history = self.game_history.append(
             {
                 'player_id': player_id,
                 'generation': None, 'ith_pairing': ith_pairing,
                 'ith_pair': ith_pair, 'ith_round': ith_round,
-                'strategy': tuple_strat,
+                'strategy': strat,
                 'action': action, 'payoff': payoff,
                 'opponents_id': opponents_id
             }, ignore_index=True
@@ -70,11 +69,19 @@ class GamePlay:
 
     def calcRelativeStratSuccess(self):
         payoff_total = self.game_history[['payoff']].sum()[0]
-        totalStratPayoff = self.game_history[
-            ['player_id', 'payoff', 'strategy']
-        ].groupby(['player_id', 'strategy']).sum()
-        totalStratPayoff['relativePayoff'] = \
-            totalStratPayoff[['payoff']] / payoff_total
+        self.game_history['tuple_strat'] = \
+            self.game_history['strategy'].apply(self._listToTuple)
+        stratPayoff = self.game_history[
+            ['player_id', 'payoff', 'tuple_strat']
+        ].groupby(['player_id', 'tuple_strat']).sum().reset_index()
+        stratPayoff['relativePayoff'] = \
+            stratPayoff[['payoff']] / payoff_total
+        stratPayoff['strategy'] = \
+            stratPayoff['tuple_strat'].apply(self._tupleToList)
+        return stratPayoff
 
-        return totalStratPayoff
+    def _tupleToList(self, t):
+        return list(map(self._tupleToList, t)) if isinstance(t, tuple) else t
 
+    def _listToTuple(self, l):
+        return tuple(map(self._listToTuple, l)) if isinstance(l, list) else l

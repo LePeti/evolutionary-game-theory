@@ -20,7 +20,6 @@ if __name__ == "__main__":
 
     gamePlay = GamePlay(players, pd, num_generations, num_pairing, num_rounds)
 
-    # Play the game
     for ith_generation in range(gamePlay.num_generations):
         gamePlay.play_game_for_multiple_pairings(ith_generation)
         gamePlay.reproduce_population(ith_generation)
@@ -28,5 +27,4 @@ if __name__ == "__main__":
 
     relativeStratSuccess = gamePlay.calc_relative_strat_success_for_generation(
     )
-    print(relativeStratSuccess.sort_values(
-        'relativePayoff', ascending=False))
+    print(relativeStratSuccess.sort_values('relativePayoff', ascending=False))

@@ -11,23 +11,36 @@ class GamePlay:
     - Iteration:      whole population plays the iterated game multiple times
     """
 
-    def __init__(self, population, game):
+    def __init__(self, population, game,
+                 num_generations=10, num_pairing=5, num_rounds=100):
         self.population = population
         self.game = game
         self.game_history = pd.DataFrame()
+        self.num_generations = num_generations
+        self.num_pairing = num_pairing
+        self.num_rounds = num_rounds
 
-    def playMultipleRoundsInPairs(self, ith_pairing, num_rounds=100):
+    def play_game_for_multiple_pairings(self, ith_generation):
+        for ith_pairing in range(self.num_pairing):
+            print(f'pairing: {ith_pairing}')
+            self.playMultipleRoundsInPairs(
+                ith_generation, ith_pairing, self.num_rounds)
+
+    def playMultipleRoundsInPairs(self, ith_generation, ith_pairing,
+                                  num_rounds):
         for ith_pair, pair in enumerate(self.pairUpPopulation()):
             print(f'pair: {ith_pair}')
-            self.playMultipleRounds(*pair, ith_pair, ith_pairing, num_rounds)
+            self.playMultipleRounds(
+                *pair, ith_generation, ith_pairing, ith_pair, num_rounds)
 
-    def playMultipleRounds(self, player1, player2, ith_pair, ith_pairing,
-                           num_rounds=100):
+    def playMultipleRounds(self, player1, player2,
+                           ith_generation, ith_pairing, ith_pair, num_rounds):
         for i in range(num_rounds):
-            self.playRound(player1, player2, ith_round=i, ith_pair=ith_pair,
-                           ith_pairing=ith_pairing)
+            self.playRound(player1, player2,
+                           ith_generation, ith_pairing, ith_pair, i)
 
-    def playRound(self, player1, player2, ith_round, ith_pair, ith_pairing):
+    def playRound(self, player1, player2,
+                  ith_generation, ith_pairing, ith_pair, ith_round):
         player1_action = player1.getCurrentAction(player2.getLastAction())
         player2_action = player2.getCurrentAction(player1.getLastAction())
         player1_payoff = self.getRowPlayersPayoffs(
@@ -37,23 +50,24 @@ class GamePlay:
         player1.addPayoffToHistory(player1_payoff)
         player2.addPayoffToHistory(player2_payoff)
         self.addRoundToGameHistory(
-            id(player1), ith_round, ith_pair, ith_pairing,
+            id(player1), ith_generation, ith_pairing, ith_pair, ith_round,
             player1.strategy, player1_action, player1_payoff, id(player2)
         )
         self.addRoundToGameHistory(
-            id(player2), ith_round, ith_pair, ith_pairing,
+            id(player2), ith_generation, ith_pairing, ith_pair, ith_round,
             player2.strategy, player2_action, player2_payoff, id(player1)
         )
 
     def getRowPlayersPayoffs(self, player1_action, player2_action):
         return int(self.game.payoffTable[player1_action, player2_action])
 
-    def addRoundToGameHistory(self, player_id, ith_round, ith_pair, ith_pairing,
+    def addRoundToGameHistory(self, player_id,
+                              ith_generation, ith_pairing, ith_pair, ith_round,
                               strat, action, payoff, opponents_id):
         self.game_history = self.game_history.append(
             {
                 'player_id': player_id,
-                'generation': None, 'ith_pairing': ith_pairing,
+                'ith_generation': ith_generation, 'ith_pairing': ith_pairing,
                 'ith_pair': ith_pair, 'ith_round': ith_round,
                 'strategy': strat,
                 'action': action, 'payoff': payoff,
@@ -61,28 +75,34 @@ class GamePlay:
             }, ignore_index=True
         )
 
-    def _convertNestedListToTuple(self, asdf):
-        tuple(tuple(list_elem) for list_elem in asdf)
-
     def pairUpPopulation(self):
         np.random.shuffle(self.population)
         return list(zip(self.population[::2], self.population[1::2]))
 
-    def calcRelativeStratSuccess(self):
-        payoff_total = self.game_history[['payoff']].sum()[0]
-        self.game_history['tuple_strat'] = \
-            self.game_history['strategy'].apply(self._listToTuple)
-        stratPayoff = self.game_history[
-            ['player_id', 'payoff', 'tuple_strat']
-        ].groupby(['player_id', 'tuple_strat']).sum().reset_index()
+    def calc_relative_strat_success_for_generation(self, ith_generation=None):
+        if ith_generation is not None:
+            ith_generation_game_history = self.game_history[
+                self.game_history['ith_generation'] == ith_generation
+            ].copy()
+        else:
+            ith_generation_game_history = self.game_history.copy()
+
+        payoff_total = ith_generation_game_history[['payoff']].sum()[0]
+        ith_generation_game_history['tuple_strat'] = \
+            ith_generation_game_history['strategy'].apply(self._listToTuple)
+        stratPayoff = ith_generation_game_history[
+            ['ith_generation', 'player_id', 'payoff', 'tuple_strat']
+        ].groupby(['ith_generation', 'player_id', 'tuple_strat']).sum(
+            ).reset_index()
         stratPayoff['relativePayoff'] = \
             stratPayoff[['payoff']] / payoff_total
         stratPayoff['strategy'] = \
             stratPayoff['tuple_strat'].apply(self._tupleToList)
         return stratPayoff
 
-    def reproduce_population(self):
-        relative_strat_success = self.calcRelativeStratSuccess()
+    def reproduce_population(self, ith_generation):
+        relative_strat_success = \
+            self.calc_relative_strat_success_for_generation(ith_generation)
         population_size = len(relative_strat_success.index)
 
         new_population_srategies = np.random.choice(

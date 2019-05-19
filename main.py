@@ -14,19 +14,19 @@ if __name__ == "__main__":
         [Player([[0, 0, 0]]) for _ in range(4)] + \
         [Player([[0, 0, 1], [1, 0, 1]]) for _ in range(4)]
 
+    num_generations = 2
     num_pairing = 2
-    gamePlay = GamePlay(players, pd)
+    num_rounds = 2
+
+    gamePlay = GamePlay(players, pd, num_generations, num_pairing, num_rounds)
 
     # Play the game
-    for generation in range(2):
-        for ith_pairing in range(num_pairing):
-            print(f'pairing: {ith_pairing}')
-            gamePlay.playMultipleRoundsInPairs(
-                ith_pairing=ith_pairing, num_rounds=20)
-
-        gamePlay.reproduce_population()
+    for ith_generation in range(gamePlay.num_generations):
+        gamePlay.play_game_for_multiple_pairings(ith_generation)
+        gamePlay.reproduce_population(ith_generation)
         gamePlay.mutate_population_with_prob(p=0.2)
 
-    relativeStratSuccess = gamePlay.calcRelativeStratSuccess()
+    relativeStratSuccess = gamePlay.calc_relative_strat_success_for_generation(
+    )
     print(relativeStratSuccess.sort_values(
         'relativePayoff', ascending=False))

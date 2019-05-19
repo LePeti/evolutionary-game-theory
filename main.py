@@ -9,32 +9,24 @@ if __name__ == "__main__":
 
     pd = Game(np.array([[2, 0],
                         [4, 1]]))
-    players = [Player([[1, 0, 0]]) for _ in range(4)]
+    players = \
+        [Player([[1, 0, 0]]) for _ in range(4)] + \
+        [Player([[0, 0, 0]]) for _ in range(4)] + \
+        [Player([[0, 0, 1], [1, 0, 1]]) for _ in range(4)]
+
     num_pairing = 2
     gamePlay = GamePlay(players, pd)
 
     # Play the game
-    for i in range(num_pairing):
-        print(f'pairing: {i}')
-        gamePlay.playMultipleRoundsInPairs(ith_pairing=i, num_rounds=10)
+    for generation in range(2):
+        for ith_pairing in range(num_pairing):
+            print(f'pairing: {ith_pairing}')
+            gamePlay.playMultipleRoundsInPairs(
+                ith_pairing=ith_pairing, num_rounds=20)
 
-    print(gamePlay.calcRelativeStratSuccess())
+        gamePlay.reproduce_population()
+        gamePlay.mutate_population_with_prob(p=0.2)
 
-    # Reproduce
-
-    # Mutate
-
-    # Play again
-
-    # players_sorted_by_strat = sorted(
-    #     players, key=lambda player: player.strategy
-    # )
-    # for player in players_sorted_by_strat:
-    #     print(player)
-
-    # history = []
-    # for i, round_history in enumerate(gamePlay.game_history):
-    #     history.append((
-    #         round_history['ith_pairing'], round_history['ith_pair'],
-    #         round_history['ith_round']
-    #     ))
+    relativeStratSuccess = gamePlay.calcRelativeStratSuccess()
+    print(relativeStratSuccess.sort_values(
+        'relativePayoff', ascending=False))

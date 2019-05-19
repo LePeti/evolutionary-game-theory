@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from Python.player import Player
 
 
 class GamePlay:
@@ -79,6 +80,22 @@ class GamePlay:
         stratPayoff['strategy'] = \
             stratPayoff['tuple_strat'].apply(self._tupleToList)
         return stratPayoff
+
+    def reproduce_population(self):
+        relative_strat_success = self.calcRelativeStratSuccess()
+        population_size = len(relative_strat_success.index)
+
+        new_population_srategies = np.random.choice(
+            a=relative_strat_success['strategy'].values,
+            p=relative_strat_success['relativePayoff'].values,
+            size=population_size
+        )
+        self.population = [Player(strat) for strat in new_population_srategies]
+
+    def mutate_population_with_prob(self, p):
+        for player in self.population:
+            if np.random.uniform() <= p:
+                player.randomlyMutateStrategy()
 
     def _tupleToList(self, t):
         return list(map(self._tupleToList, t)) if isinstance(t, tuple) else t

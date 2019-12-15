@@ -5,65 +5,75 @@ from Python.player import Player
 
 class GamePlay:
     """
-    Definitions:
+    Parameters:
+    - population: multiple `Player`s who will play the game
+    - game: (Class `Game`) payoff matrix which determines the rules of the game
+    - num_pairing: number of times the population is paired up to play
+    - num_rounds: number of iterations one pair plays the game
+
+    How many times is a single game played:
+    num_generation x num_pairing x num_rounds
+
+    General vocab:
     - Game:           two players play the game once
-    - Iterated game:  a game played for multiple rounds
-    - Iteration:      whole population plays the iterated game multiple times
+    - Iterated game:  a game played for `num_rounds` rounds
+    - Iteration:      whole population plays the iterated game `num_pairing`
+                      times
+    - Generations:    after an Iteration, the population reproduces and the
+                      next generation starts the next iteration
     """
 
-    def __init__(self, population, game,
-                 num_generations=10, num_pairing=5, num_rounds=100):
+    def __init__(self, population, game, num_pairing=5, num_rounds=100):
         self.population = population
         self.game = game
         self.game_history = pd.DataFrame()
-        self.num_generations = num_generations
         self.num_pairing = num_pairing
         self.num_rounds = num_rounds
 
     def play_game_for_multiple_pairings(self, ith_generation):
         for ith_pairing in range(self.num_pairing):
             print(f'pairing: {ith_pairing}')
-            self.playMultipleRoundsInPairs(
+            self.play_multiple_rounds_in_pairs(
                 ith_generation, ith_pairing, self.num_rounds)
 
-    def playMultipleRoundsInPairs(self, ith_generation, ith_pairing,
-                                  num_rounds):
-        for ith_pair, pair in enumerate(self.pairUpPopulation()):
+    def play_multiple_rounds_in_pairs(self, ith_generation, ith_pairing,
+                                      num_rounds):
+        for ith_pair, pair in enumerate(self.pair_up_population()):
             print(f'pair: {ith_pair}')
-            self.playMultipleRounds(
+            self.play_multiple_rounds(
                 *pair, ith_generation, ith_pairing, ith_pair, num_rounds)
 
-    def playMultipleRounds(self, player1, player2,
-                           ith_generation, ith_pairing, ith_pair, num_rounds):
+    def play_multiple_rounds(self, player1, player2, ith_generation,
+                             ith_pairing, ith_pair, num_rounds):
         for i in range(num_rounds):
-            self.playRound(player1, player2,
-                           ith_generation, ith_pairing, ith_pair, i)
+            self.play_round(player1, player2,
+                            ith_generation, ith_pairing, ith_pair, i)
 
-    def playRound(self, player1, player2,
-                  ith_generation, ith_pairing, ith_pair, ith_round):
+    def play_round(self, player1, player2,
+                   ith_generation, ith_pairing, ith_pair, ith_round):
         player1_action = player1.getCurrentAction(player2.getLastAction())
         player2_action = player2.getCurrentAction(player1.getLastAction())
-        player1_payoff = self.getRowPlayersPayoffs(
+        player1_payoff = self.get_row_players_payoffs(
             player1_action, player2_action)
-        player2_payoff = self.getRowPlayersPayoffs(
+        player2_payoff = self.get_row_players_payoffs(
             player2_action, player1_action)
         player1.addPayoffToHistory(player1_payoff)
         player2.addPayoffToHistory(player2_payoff)
-        self.addRoundToGameHistory(
+        self.add_round_to_game_history(
             id(player1), ith_generation, ith_pairing, ith_pair, ith_round,
             player1.strategy, player1_action, player1_payoff, id(player2)
         )
-        self.addRoundToGameHistory(
+        self.add_round_to_game_history(
             id(player2), ith_generation, ith_pairing, ith_pair, ith_round,
             player2.strategy, player2_action, player2_payoff, id(player1)
         )
 
-    def getRowPlayersPayoffs(self, player1_action, player2_action):
+    def get_row_players_payoffs(self, player1_action, player2_action):
         return int(self.game.payoffTable[player1_action, player2_action])
 
-    def addRoundToGameHistory(self, player_id,
-                              ith_generation, ith_pairing, ith_pair, ith_round,
-                              strat, action, payoff, opponents_id):
+    def add_round_to_game_history(self, player_id, ith_generation, ith_pairing,
+                                  ith_pair, ith_round,
+                                  strat, action, payoff, opponents_id):
         self.game_history = self.game_history.append(
             {
                 'player_id': player_id,
@@ -75,7 +85,7 @@ class GamePlay:
             }, ignore_index=True
         )
 
-    def pairUpPopulation(self):
+    def pair_up_population(self):
         np.random.shuffle(self.population)
         return list(zip(self.population[::2], self.population[1::2]))
 
@@ -89,15 +99,15 @@ class GamePlay:
 
         payoff_total = ith_generation_game_history[['payoff']].sum()[0]
         ith_generation_game_history['tuple_strat'] = \
-            ith_generation_game_history['strategy'].apply(self._listToTuple)
+            ith_generation_game_history['strategy'].apply(self._list_to_tuple)
         stratPayoff = ith_generation_game_history[
             ['ith_generation', 'player_id', 'payoff', 'tuple_strat']
         ].groupby(['ith_generation', 'player_id', 'tuple_strat']).sum(
-            ).reset_index()
+        ).reset_index()
         stratPayoff['relativePayoff'] = \
             stratPayoff[['payoff']] / payoff_total
         stratPayoff['strategy'] = \
-            stratPayoff['tuple_strat'].apply(self._tupleToList)
+            stratPayoff['tuple_strat'].apply(self._tuple_to_list)
         return stratPayoff
 
     def reproduce_population(self, ith_generation):
@@ -117,8 +127,8 @@ class GamePlay:
             if np.random.uniform() <= p:
                 player.randomlyMutateStrategy()
 
-    def _tupleToList(self, t):
-        return list(map(self._tupleToList, t)) if isinstance(t, tuple) else t
+    def _tuple_to_list(self, t):
+        return list(map(self._tuple_to_list, t)) if isinstance(t, tuple) else t
 
-    def _listToTuple(self, l):
-        return tuple(map(self._listToTuple, l)) if isinstance(l, list) else l
+    def _list_to_tuple(self, l):
+        return tuple(map(self._list_to_tuple, l)) if isinstance(l, list) else l

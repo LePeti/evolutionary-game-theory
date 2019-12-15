@@ -12,10 +12,11 @@ class Player:
 
     [[0, 0, 1], [1, 0, 1]]
 
-    The first string in the tuple is the action, the second element in
-    the tuple is the transition which tells you to which state (node)
-    to go when the opponent cooperated. 0 means go to the 0th node,
-    i.e. stay at the current node if you are already there.
+    The first string in each sublist is the action, the second element in
+    the sublists is the transition which tells you to which state
+    (node/sublist) to go when the opponent cooperated. 0 means go to the 0th
+    node, i.e. stay at the current node if you are already there. The very
+    first action is determined by the first element of the first node.
     '''
 
     def __init__(self, strategy):
@@ -74,7 +75,7 @@ class Player:
         random_state_index = np.random.choice(state_indexes)
         random_transition_index = np.random.choice([1, 2])
         available_new_state_indexes = list(set(state_indexes) - set(
-                [self.strategy[random_state_index][random_transition_index]])
+            [self.strategy[random_state_index][random_transition_index]])
         )
         new_random_state_index = np.random.choice(available_new_state_indexes)
         self.strategy[random_state_index][random_transition_index] = \

@@ -1,4 +1,4 @@
-from player import Player
+from Python.player import Player
 
 myPlayer = Player([[0, 0, 0]])
 

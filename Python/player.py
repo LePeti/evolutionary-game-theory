@@ -105,7 +105,7 @@ class Player:
 
     def _construct_and_append_new_state(self):
         new_action = np.random.choice([0, 1])
-        new_transitions = np.random.choice([0, 1], size=2)
+        new_transitions = np.random.choice(len(self.strategy) + 1, size=2)
         self.strategy.append([new_action] + list(new_transitions))
 
     def _connect_rnd_not_last_state_with_last_state(self):

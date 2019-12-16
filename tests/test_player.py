@@ -134,15 +134,14 @@ class TestPlayer(unittest.TestCase):
     @patch('numpy.random.choice')
     def test_add_new_state_addsStateWith0or1AsFirstElement(self, rndChcMck, _):
         self.simplePlayer.add_new_state()
-
         self.assertEqual(rndChcMck.call_args_list[0][0][0], [0, 1])
 
     @patch('Python.player.Player._connect_rnd_not_last_state_with_last_state')
     @patch('numpy.random.choice')
-    def test_add_new_state_assigns0or1TransitionsRandomly(self, rndChcMck, _):
-        self.simplePlayer.add_new_state()
-
-        self.assertEqual(rndChcMck.call_args_list[1][0][0], [0, 1])
+    def test_add_new_state_new_st_points_to_any_other_node(self, rndChcMck, _):
+        self.tftPlayer.add_new_state()
+        max_node_index = len(self.tftPlayer.strategy)
+        self.assertEqual(rndChcMck.call_args_list[1][0][0], max_node_index)
 
     def test_add_new_state_hasAtLeastOneOtherStatePointingToIt(self):
         self.tftPlayer.add_new_state()
@@ -171,7 +170,7 @@ class TestPlayer(unittest.TestCase):
             mock.call_args_list[0][0][0]
         )
 
-    def test_rmvState_remainingTransitsPointToExistingStates(self):
+    def test_remove_state_remainingTransitsPointToExistingStates(self):
         np.random.seed(99)
         self.tftPlayer.remove_state()
         available_states = range(len(self.tftPlayer.strategy))

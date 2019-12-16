@@ -15,8 +15,8 @@ class TestGamePlay(unittest.TestCase):
         self.players = [Player([[0, 0, 0]]), Player([[1, 0, 0]])]
         self.subject = GamePlay(population=self.players, game=self.pd)
 
-    @patch('Python.player.Player.addPayoffToHistory')
-    def test_playRound_callsaddPayoffToHistoryTwice(self, mock):
+    @patch('Python.player.Player.add_payoff_to_history')
+    def test_playRound_callsadd_payoff_to_historyTwice(self, mock):
         self.subject.play_round(self.players[0], self.players[1],
                                 ith_generation=None, ith_pairing=None,
                                 ith_pair=None, ith_round=None)

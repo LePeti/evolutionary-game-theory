@@ -51,14 +51,14 @@ class GamePlay:
 
     def play_round(self, player1, player2,
                    ith_generation, ith_pairing, ith_pair, ith_round):
-        player1_action = player1.getCurrentAction(player2.getLastAction())
-        player2_action = player2.getCurrentAction(player1.getLastAction())
+        player1_action = player1.get_current_action(player2.get_last_action())
+        player2_action = player2.get_current_action(player1.get_last_action())
         player1_payoff = self.get_row_players_payoffs(
             player1_action, player2_action)
         player2_payoff = self.get_row_players_payoffs(
             player2_action, player1_action)
-        player1.addPayoffToHistory(player1_payoff)
-        player2.addPayoffToHistory(player2_payoff)
+        player1.add_payoff_to_history(player1_payoff)
+        player2.add_payoff_to_history(player2_payoff)
         self.add_round_to_game_history(
             id(player1), ith_generation, ith_pairing, ith_pair, ith_round,
             player1.strategy, player1_action, player1_payoff, id(player2)
@@ -125,7 +125,7 @@ class GamePlay:
     def mutate_population_with_prob(self, p):
         for player in self.population:
             if np.random.uniform() <= p:
-                player.randomlyMutateStrategy()
+                player.randomly_mutate_strategy()
 
     def _tuple_to_list(self, t):
         return list(map(self._tuple_to_list, t)) if isinstance(t, tuple) else t

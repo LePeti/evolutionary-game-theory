@@ -24,49 +24,67 @@ class Player:
         self.payoff_history = []
         self.state_index_history = []
 
-    def getCurrentAction(self, opponents_last_action):
-        if self.getLastStateIndex() is None:
-            self.updateStateIndexHistoryWith(0)
+    def get_current_action(self, opponents_last_action):
+        if self.get_last_state_index() is None:
+            self.update_state_index_history_with(0)
             return self.strategy[0][0]
-        last_state = self.getLastState()
+        last_state = self.get_last_state()
         current_state_index = last_state[opponents_last_action + 1]
         current_action = self.strategy[current_state_index][0]
-        self.updateStateIndexHistoryWith(current_state_index)
+        self.update_state_index_history_with(current_state_index)
         return current_action
 
-    def getLastAction(self):
-        if self.getLastState() is None:
+    def get_last_action(self):
+        if self.get_last_state() is None:
             return self.strategy[0][0]
         else:
-            return self.getLastState()[0]
+            return self.get_last_state()[0]
 
-    def getLastStateIndex(self):
+    def get_last_state_index(self):
         if not self.state_index_history:
             return None
         else:
             return self.state_index_history[-1]
 
-    def getLastState(self):
-        if self.getLastStateIndex() is None:
+    def get_last_state(self):
+        if self.get_last_state_index() is None:
             return None
         else:
-            return self.strategy[self.getLastStateIndex()]
+            return self.strategy[self.get_last_state_index()]
 
-    def updateStateIndexHistoryWith(self, state_index):
+    def update_state_index_history_with(self, state_index):
         self.state_index_history.append(state_index)
 
-    def addPayoffToHistory(self, payoff):
+    def add_payoff_to_history(self, payoff):
         self.payoff_history.append(payoff)
 
-    def getAveragePayoff(self):
+    def get_average_payoff(self):
         return np.mean(self.payoff_history)
 
-    def changeRandomStateAction(self):
+    def randomly_mutate_strategy(self):
+        random_mutation = np.random.choice([
+            self.remove_state,
+            self.add_new_state,
+            self.rewire_random_transition,
+            self.change_random_state_action
+        ])
+
+        print(random_mutation.__name__)
+
+        try:
+            random_mutation()
+        except Exception as Error:
+            print(Error)
+            self.randomly_mutate_strategy()
+
+        return self.strategy
+
+    def change_random_state_action(self):
         random_state_index = np.random.randint(len(self.strategy))
         self.strategy[random_state_index][0] = \
             self.strategy[random_state_index][0] * -1 + 1
 
-    def rewireRandomTransition(self):
+    def rewire_random_transition(self):
         if len(self.strategy) == 1:
             raise Exception(
                 f'Cannot rewire single state strategy ({self.strategy})'
@@ -81,22 +99,22 @@ class Player:
         self.strategy[random_state_index][random_transition_index] = \
             new_random_state_index
 
-    def addNewState(self):
-        self._constructAndAppendNewState()
-        self._connectRndNotLastStateWithLastState()
+    def add_new_state(self):
+        self._construct_and_append_new_state()
+        self._connect_rnd_not_last_state_with_last_state()
 
-    def _constructAndAppendNewState(self):
+    def _construct_and_append_new_state(self):
         new_action = np.random.choice([0, 1])
         new_transitions = np.random.choice([0, 1], size=2)
         self.strategy.append([new_action] + list(new_transitions))
 
-    def _connectRndNotLastStateWithLastState(self):
+    def _connect_rnd_not_last_state_with_last_state(self):
         rnd_but_not_last_state_index = np.random.choice(len(self.strategy) - 1)
         rnd_transition_index = np.random.choice([1, 2])
         self.strategy[rnd_but_not_last_state_index][rnd_transition_index] = \
             len(self.strategy) - 1
 
-    def removeState(self):
+    def remove_state(self):
         if len(self.strategy) == 1:
             raise Exception(
                 f'Cannot remove state from single state strategy: '
@@ -104,9 +122,9 @@ class Player:
         random_state_index = np.random.choice(range(len(self.strategy)))
         self.strategy.pop(random_state_index)
 
-        self._rewireTransitionsPointingToRemovedState()
+        self._rewire_transitions_pointing_to_removed_state()
 
-    def _rewireTransitionsPointingToRemovedState(self):
+    def _rewire_transitions_pointing_to_removed_state(self):
         available_states = range(len(self.strategy))
 
         for state_index, state in enumerate(self.strategy):
@@ -116,26 +134,8 @@ class Player:
                     self.strategy[state_index][transition_index + 1] = \
                         new_random_state_index
 
-    def randomlyMutateStrategy(self):
-        random_mutation = np.random.choice([
-            self.removeState,
-            self.addNewState,
-            self.rewireRandomTransition,
-            self.changeRandomStateAction
-        ])
-
-        print(random_mutation.__name__)
-
-        try:
-            random_mutation()
-        except Exception as Error:
-            print(Error)
-            self.randomlyMutateStrategy()
-
-        return self.strategy
-
     def __str__(self):
         return ("Player [{}] "
                 "Average payoff: {}").format(
             self.strategy,
-            self.getAveragePayoff())
+            self.get_average_payoff())

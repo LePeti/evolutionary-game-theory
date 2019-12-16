@@ -1,9 +1,8 @@
-from Python.player import *
-from Python.game import *
-from Python.game_play import *
+from Python.player import Player
+from Python.game import Game
+from Python.game_play import GamePlay
 
 import numpy as np
-import pandas as pd
 
 if __name__ == "__main__":
     np.random.seed(999)

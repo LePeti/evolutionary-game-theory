@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
+
 from Python.player import Player
 
 
@@ -31,15 +33,13 @@ class GamePlay:
         self.num_rounds = num_rounds
 
     def play_game_for_multiple_pairings(self, ith_generation):
-        for ith_pairing in range(self.num_pairing):
-            print(f'pairing: {ith_pairing}')
+        for ith_pairing in tqdm(range(self.num_pairing)):
             self.play_multiple_rounds_in_pairs(
                 ith_generation, ith_pairing, self.num_rounds)
 
     def play_multiple_rounds_in_pairs(self, ith_generation, ith_pairing,
                                       num_rounds):
         for ith_pair, pair in enumerate(self.pair_up_population()):
-            print(f'pair: {ith_pair}')
             self.play_multiple_rounds(
                 *pair, ith_generation, ith_pairing, ith_pair, num_rounds)
 

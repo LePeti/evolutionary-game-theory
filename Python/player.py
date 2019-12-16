@@ -61,20 +61,21 @@ class Player:
     def get_average_payoff(self):
         return np.mean(self.payoff_history)
 
-    def randomly_mutate_strategy(self):
+    def randomly_mutate_strategy(self, verbose=False):
         random_mutation = np.random.choice([
             self.remove_state,
             self.add_new_state,
             self.rewire_random_transition,
             self.change_random_state_action
         ])
-
-        print(random_mutation.__name__)
+        if verbose:
+            print(random_mutation.__name__)
 
         try:
             random_mutation()
         except Exception as Error:
-            print(Error)
+            if verbose:
+                print(Error)
             self.randomly_mutate_strategy()
 
         return self.strategy

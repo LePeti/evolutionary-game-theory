@@ -13,19 +13,21 @@ if __name__ == "__main__":
 
     num_generations = 5
     num_pairing = 5
-    num_rounds = 5
+    num_rounds = 20
     probability_of_mutation = 0.5
 
     gamePlay = GamePlay(players, pd, num_pairing, num_rounds)
 
     for ith_generation in range(num_generations):
-        print(f'Generation: {ith_generation + 1}')
         gamePlay.play_game_for_multiple_pairings(ith_generation)
         gamePlay.reproduce_population(ith_generation)
         gamePlay.mutate_population_with_prob(p=probability_of_mutation)
         gen_history = gamePlay.game_history[
             gamePlay.game_history['ith_generation'] == ith_generation]
-        print(f'{ith_generation}: {gen_history["action"].sum()}')
+        print(
+            f'{ith_generation + 1}. generation avg payoff: '
+            f'{gen_history["action"].mean()}'
+        )
 
     relativeStratSuccess = gamePlay.calc_relative_strat_success_for_generation(
     )
@@ -33,6 +35,6 @@ if __name__ == "__main__":
         f'output/num_gen_{num_generations}_'
         f'num_pairing_{num_pairing}_'
         f'num_rounds_{num_rounds}_'
-        f'mute_prob_{probability_of_mutation}.csv'
+        f'mute_prob_{probability_of_mutation}.csv',
+        index=False
     )
-    print(relativeStratSuccess.sort_values('relativePayoff', ascending=False))

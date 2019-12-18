@@ -19,9 +19,8 @@ class Player:
     first action is determined by the first element of the first node.
     '''
 
-    def __init__(self, strategy, original_strategy):
+    def __init__(self, strategy):
         self.strategy = strategy
-        self.original_strategy = original_strategy
         self.payoff_history = []
         self.state_index_history = []
 
@@ -77,7 +76,7 @@ class Player:
         except Exception as Error:
             if verbose:
                 print(Error)
-            self.randomly_mutate_strategy(verbose=verbose)
+            self.randomly_mutate_strategy()
 
         return self.strategy
 

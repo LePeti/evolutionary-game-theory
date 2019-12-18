@@ -61,13 +61,11 @@ class GamePlay:
         player2.add_payoff_to_history(player2_payoff)
         self.add_round_to_game_history(
             id(player1), ith_generation, ith_pairing, ith_pair, ith_round,
-            player1.strategy, player1.original_strategy, player1_action,
-            player1_payoff, id(player2)
+            player1.strategy, player1_action, player1_payoff, id(player2)
         )
         self.add_round_to_game_history(
             id(player2), ith_generation, ith_pairing, ith_pair, ith_round,
-            player2.strategy, player2.original_strategy, player2_action,
-            player2_payoff, id(player1)
+            player2.strategy, player2_action, player2_payoff, id(player1)
         )
 
     def get_row_players_payoffs(self, player1_action, player2_action):
@@ -75,15 +73,13 @@ class GamePlay:
 
     def add_round_to_game_history(self, player_id, ith_generation, ith_pairing,
                                   ith_pair, ith_round,
-                                  strat, orig_strat, action, payoff,
-                                  opponents_id):
+                                  strat, action, payoff, opponents_id):
         self.game_history = self.game_history.append(
             {
                 'player_id': player_id,
                 'ith_generation': ith_generation, 'ith_pairing': ith_pairing,
                 'ith_pair': ith_pair, 'ith_round': ith_round,
                 'strategy': strat,
-                'orig_strat': orig_strat,
                 'action': action, 'payoff': payoff,
                 'opponents_id': opponents_id
             }, ignore_index=True
@@ -104,19 +100,14 @@ class GamePlay:
         payoff_total = ith_generation_game_history[['payoff']].sum()[0]
         ith_generation_game_history['tuple_strat'] = \
             ith_generation_game_history['strategy'].apply(self._list_to_tuple)
-        ith_generation_game_history['tuple_orig_strat'] = \
-            ith_generation_game_history['orig_strat'].apply(
-                self._list_to_tuple)
-        grp_by_cols = ['ith_generation', 'player_id',
-                       'tuple_strat', 'tuple_orig_strat']
-        stratPayoff = ith_generation_game_history[grp_by_cols + ['payoff']] \
-            .groupby(grp_by_cols).sum().reset_index()
+        stratPayoff = ith_generation_game_history[
+            ['ith_generation', 'player_id', 'payoff', 'tuple_strat']
+        ].groupby(['ith_generation', 'player_id', 'tuple_strat']).sum(
+        ).reset_index()
         stratPayoff['relativePayoff'] = \
             stratPayoff[['payoff']] / payoff_total
         stratPayoff['strategy'] = \
             stratPayoff['tuple_strat'].apply(self._tuple_to_list)
-        stratPayoff['orig_strat'] = \
-            stratPayoff['tuple_orig_strat'].apply(self._tuple_to_list)
         return stratPayoff
 
     def reproduce_population(self, ith_generation):
@@ -124,13 +115,12 @@ class GamePlay:
             self.calc_relative_strat_success_for_generation(ith_generation)
         population_size = len(relative_strat_success.index)
 
-        new_population_strategies = np.random.choice(
+        new_population_srategies = np.random.choice(
             a=relative_strat_success['strategy'].values,
             p=relative_strat_success['relativePayoff'].values,
             size=population_size
         )
-        self.population = [Player(strat, strat)
-                           for strat in new_population_strategies]
+        self.population = [Player(strat) for strat in new_population_srategies]
 
     def mutate_population_with_prob(self, p):
         for player in self.population:

@@ -12,8 +12,7 @@ class TestGamePlay(unittest.TestCase):
     def setUp(self):
         self.pd = Game(np.array([[2, 0],
                                  [4, 1]]))
-        self.players = [Player([[0, 0, 0]], [[0, 0, 0]]),
-                        Player([[1, 0, 0]], [[1, 0, 0]])]
+        self.players = [Player([[0, 0, 0]]), Player([[1, 0, 0]])]
         self.subject = GamePlay(population=self.players, game=self.pd)
 
     @patch('Python.player.Player.add_payoff_to_history')
@@ -37,8 +36,6 @@ class TestGamePlay(unittest.TestCase):
 
         p1_strat = self.players[0].strategy
         p2_strat = self.players[1].strategy
-        p1_original_strat = self.players[0].original_strategy
-        p2_original_strat = self.players[1].original_strategy
         p1_action = self.players[0].strategy[0][0]
         p2_action = self.players[1].strategy[0][0]
         p1_payoff = self.subject.get_row_players_payoffs(p1_action, p2_action)
@@ -50,10 +47,9 @@ class TestGamePlay(unittest.TestCase):
         self.assertEqual(mock.call_args_list[0][0][3], ith_pair)
         self.assertEqual(mock.call_args_list[0][0][4], ith_round)
         self.assertEqual(mock.call_args_list[0][0][5], p1_strat)
-        self.assertEqual(mock.call_args_list[0][0][6], p1_original_strat)
-        self.assertEqual(mock.call_args_list[0][0][7], p1_action)
-        self.assertEqual(mock.call_args_list[0][0][8], p1_payoff)
-        self.assertEqual(mock.call_args_list[0][0][9], id(self.players[1]))
+        self.assertEqual(mock.call_args_list[0][0][6], p1_action)
+        self.assertEqual(mock.call_args_list[0][0][7], p1_payoff)
+        self.assertEqual(mock.call_args_list[0][0][8], id(self.players[1]))
 
         self.assertEqual(mock.call_args_list[1][0][0], id(self.players[1]))
         self.assertEqual(mock.call_args_list[1][0][1], ith_generation)
@@ -61,10 +57,9 @@ class TestGamePlay(unittest.TestCase):
         self.assertEqual(mock.call_args_list[1][0][3], ith_pair)
         self.assertEqual(mock.call_args_list[1][0][4], ith_round)
         self.assertEqual(mock.call_args_list[1][0][5], p2_strat)
-        self.assertEqual(mock.call_args_list[1][0][6], p2_original_strat)
-        self.assertEqual(mock.call_args_list[1][0][7], p2_action)
-        self.assertEqual(mock.call_args_list[1][0][8], p2_payoff)
-        self.assertEqual(mock.call_args_list[1][0][9], id(self.players[0]))
+        self.assertEqual(mock.call_args_list[1][0][6], p2_action)
+        self.assertEqual(mock.call_args_list[1][0][7], p2_payoff)
+        self.assertEqual(mock.call_args_list[1][0][8], id(self.players[0]))
 
     def test_getPlayerPayoffs_returnsProperPdPayoffs(self):
         self.assertEqual(self.subject.get_row_players_payoffs(0, 1), 0)
@@ -78,7 +73,7 @@ class TestGamePlay(unittest.TestCase):
         )
 
     def test_pairUpPop_returnsHalfLengthOfPlyrsMinusHalf_givenOddPlayers(self):
-        players = [Player([[0, 0, 0]], [[0, 0, 0]]) for i in range(7)]
+        players = [Player([0, 0, 0]) for i in range(7)]
         gameplay = GamePlay(players, self.pd)
         self.assertEqual(
             len(gameplay.pair_up_population()),

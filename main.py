@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     pd = Game(np.array([[2, 0],
                         [4, 1]]))
-    players = [Player([[1, 0, 0]], [[1, 0, 0]]) for _ in range(30)]
+    players = [Player([[1, 0, 0]]) for _ in range(30)]
 
     num_generations = 5
     num_pairing = 5

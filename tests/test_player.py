@@ -8,10 +8,9 @@ from Python.player import Player
 class TestPlayer(unittest.TestCase):
 
     def setUp(self):
-        self.simplePlayer = Player([[0, 0, 0]], [[0, 0, 0]])
+        self.simplePlayer = Player([[0, 0, 0]])
         self.titfortat_strategy = [[0, 0, 1], [1, 0, 1]]
-        self.tftPlayer = Player(self.titfortat_strategy,
-                                self.titfortat_strategy)
+        self.tftPlayer = Player(self.titfortat_strategy)
 
     def test_get_average_payoff_returns1_givenPayoffHistory1(self):
         self.simplePlayer.add_payoff_to_history(1)
